@@ -19,6 +19,15 @@ impl Config {
     }
 }
 
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    contents
+        .lines()
+        .filter(|line| {
+            line.contains(query)
+        })
+        .collect()
+}
+
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let mut f = File::open(&config.filename)?;
     let mut contents = String::new();
