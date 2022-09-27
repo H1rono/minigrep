@@ -26,6 +26,7 @@ fn main() {
         println!("error occured while parsing arguments: {}", err);
         process::exit(1);
     });
+    println!("required query: {}", &config.query);
     println!("reading file {}...", &config.filename);
     let mut f = File::open(&config.filename).expect("file not found");
     let mut contents = String::new();
