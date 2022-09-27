@@ -23,6 +23,5 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let mut f = File::open(&config.filename)?;
     let mut contents = String::new();
     f.read_to_string(&mut contents)?;
-    println!("The file contents is:\n{}", contents);
     Ok(())
 }
