@@ -32,6 +32,10 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let mut f = File::open(&config.filename)?;
     let mut contents = String::new();
     f.read_to_string(&mut contents)?;
+    let result = search(&config.query, &contents)
+        .into_iter()
+        .fold(String::new(), |acc, m| format!("{}{}\n", acc, m));
+    print!("{}", result);
     Ok(())
 }
 
