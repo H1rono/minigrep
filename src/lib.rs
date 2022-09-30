@@ -10,13 +10,14 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
+    pub fn new(args: env::Args) -> Result<Config, &'static str> {
+        let mut args = args;
         if args.len() < 3 {
             return Err("not enough arguments");
         }
         Ok(Self {
-            query: args[1].clone(),
-            filename: args[2].clone(),
+            query: args.next().unwrap(),
+            filename: args.next().unwrap(),
             case_sensitive: env::var("CASE_INSENSITIVE").is_err()
         })
     }
