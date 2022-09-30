@@ -28,6 +28,16 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
         .collect()
 }
 
+pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    let query_lowercase = query.to_lowercase();
+    contents
+        .lines()
+        .filter(|line| {
+            line.to_lowercase().contains(&query_lowercase)
+        })
+        .collect()
+}
+
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let mut f = File::open(&config.filename)?;
     let mut contents = String::new();
