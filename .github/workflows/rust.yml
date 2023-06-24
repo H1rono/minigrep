@@ -1,0 +1,53 @@
+name: Rust
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: "-C instrument-coverage"
+  LLVM_PROFILE_FILE: "target/profile/traq-bot-http-rs-%p-%m.profraw"
+  GRCOV_VERSION: "0.8.13"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Cache build
+        uses: Swatinem/rust-cache@v2
+      - name: Add components
+        run: |
+          rustup component add rustfmt
+          rustup component add clippy
+          rustup component add llvm-tools
+      - name: install grcov
+        run: |
+          curl -sSL -o grcov.tar.bz2 https://github.com/mozilla/grcov/releases/download/v${GRCOV_VERSION}/grcov-x86_64-unknown-linux-gnu.tar.bz2
+          tar -jxf grcov.tar.bz2
+          rm grcov.tar.bz2
+      - name: Clean # not to use old coverage
+        run: cargo clean
+      - name: Build
+        run: cargo build
+      - name: Check format
+        run: cargo fmt --all -- --check
+      - name: Lint
+        run: cargo clippy --all-targets -- -D warnings
+      - name: Run tests
+        run: |
+          mkdir -p target/profile
+          cargo test
+      - name: generate LCOV
+        run: ./grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./target/coverage.lcov
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: target/coverage.lcov
