@@ -18,7 +18,7 @@ impl Config {
         Ok(Self {
             query: args.next().unwrap(),
             filename: args.next().unwrap(),
-            case_sensitive: env::var("CASE_INSENSITIVE").is_err()
+            case_sensitive: env::var("CASE_INSENSITIVE").is_err(),
         })
     }
 }
@@ -26,9 +26,7 @@ impl Config {
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     contents
         .lines()
-        .filter(|line| {
-            line.contains(query)
-        })
+        .filter(|line| line.contains(query))
         .collect()
 }
 
@@ -36,9 +34,7 @@ pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a st
     let query_lowercase = query.to_lowercase();
     contents
         .lines()
-        .filter(|line| {
-            line.to_lowercase().contains(&query_lowercase)
-        })
+        .filter(|line| line.to_lowercase().contains(&query_lowercase))
         .collect()
 }
 
@@ -47,20 +43,20 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let mut contents = String::new();
     f.read_to_string(&mut contents)?;
     let result = if config.case_sensitive {
-            search(&config.query, &contents)
-        } else {
-            search_case_insensitive(&config.query, &contents)
-        }
-        .into_iter()
-        .fold(String::new(), |acc, m| format!("{}{}\n", acc, m));
+        search(&config.query, &contents)
+    } else {
+        search_case_insensitive(&config.query, &contents)
+    }
+    .into_iter()
+    .fold(String::new(), |acc, m| format!("{}{}\n", acc, m));
     print!("{}", result);
     Ok(())
 }
 
 #[cfg(test)]
 mod test {
-    use indoc::indoc;
     use super::*;
+    use indoc::indoc;
 
     #[test]
     fn one_result() {
@@ -71,10 +67,7 @@ mod test {
             Pick three.
         "};
 
-        assert_eq!(
-            vec!["safe, fast, productive."],
-            search(query, contents)
-        );
+        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
     }
 
     #[test]
@@ -87,10 +80,7 @@ mod test {
             Duct tape.
         "};
 
-        assert_eq!(
-            vec!["safe, fast, productive."],
-            search(query, contents)
-        );
+        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
     }
 
     #[test]
