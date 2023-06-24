@@ -59,15 +59,17 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
 #[cfg(test)]
 mod test {
+    use indoc::indoc;
     use super::*;
 
     #[test]
     fn one_result() {
         let query = "duct";
-        let contents = "\
-Rust:
-safe, fast, productive.
-Pick three.";
+        let contents = indoc! {"
+            Rust:
+            safe, fast, productive.
+            Pick three.
+        "};
 
         assert_eq!(
             vec!["safe, fast, productive."],
@@ -78,11 +80,12 @@ Pick three.";
     #[test]
     fn case_sensitive() {
         let query = "duct";
-        let contents = "\
-Rust:
-safe, fast, productive.
-Pick three.
-Duct tape.";
+        let contents = indoc! {"
+            Rust:
+            safe, fast, productive.
+            Pick three.
+            Duct tape.
+        "};
 
         assert_eq!(
             vec!["safe, fast, productive."],
@@ -93,11 +96,12 @@ Duct tape.";
     #[test]
     fn case_insensitive() {
         let query = "rUsT";
-        let contents = "\
-Rust:
-safe, fast, productive.
-Pick three.
-Trust me.";
+        let contents = indoc! {"\
+            Rust:
+            safe, fast, productive.
+            Pick three.
+            Trust me.
+        "};
 
         assert_eq!(
             vec!["Rust:", "Trust me."],
