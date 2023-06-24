@@ -5,7 +5,7 @@ use std::process;
 
 fn main() {
     let config = minigrep::Config::new(env::args()).unwrap_or_else(|err| {
-        eprintln!("error occured while parsing arguments: {}", err);
+        eprintln!("error occurred while parsing arguments: {}", err);
         process::exit(1);
     });
     if let Err(e) = minigrep::run(config) {
